@@ -1,0 +1,23 @@
+[
+    {
+        "product_id": 1,
+        "naam": "Biologische Appels",
+        "prijs": "2.99",
+        "beschrijving": "Verse appels uit Nederland",
+        "afbeelding": "images/appels.jpg"
+    },
+    {
+        "product_id": 2,
+        "naam": "Bananen",
+        "prijs": "1.49",
+        "beschrijving": "Heerlijke verse bananen",
+        "afbeelding": "images/bananen.jpg"
+    },
+    {
+        "product_id": 3,
+        "naam": "Volle Melk",
+        "prijs": "1.19",
+        "beschrijving": "Verse volle melk van de boerderij",
+        "afbeelding": "images/melk.jpg"
+    }
+]
