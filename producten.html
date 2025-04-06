@@ -3,28 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commodum Copia - Producten</title>
+    <title>Producten - Commodum Copia</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
         <nav>
+            <div class="logo">Commodum Copia</div>
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="producten.html">Producten</a></li>
+                <li><a href="winkelwagen.html">Winkelwagen <span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section>
+        <section class="producten-container">
             <h1>Onze Producten</h1>
-            <div id="product-list"></div>
+            <div class="filter-container">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Zoek producten...">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="category-filter">
+                    <select id="category-select">
+                        <option value="all">Alle categorieën</option>
+                        <option value="Zuivel">Zuivel</option>
+                        <option value="Bakkerij">Bakkerij</option>
+                        <option value="Eieren">Eieren</option>
+                        <option value="Fruit">Fruit</option>
+                    </select>
+                </div>
+            </div>
+            <div id="producten-grid" class="producten-grid">
+                <!-- Producten worden dynamisch geladen via JavaScript -->
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 Commodum Copia - Alle rechten voorbehouden.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Commodum Copia</h3>
+                <p>Uw bron voor verse lokale producten</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: info@commodumcopia.nl</p>
+                <p>Tel: 020-1234567</p>
+            </div>
+            <div class="footer-section">
+                <h3>Volg Ons</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2024 Commodum Copia. Alle rechten voorbehouden.</p>
     </footer>
 
     <script src="script.js"></script>
