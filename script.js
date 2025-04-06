@@ -13,16 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearCartBtn = document.getElementById('clear-cart');
     const betaalBtn = document.getElementById('betaal-btn');
 
-    // Productafbeeldingen mapping
-    const productAfbeeldingen = {
-        1: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Biologische Melk
-        2: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Volkorenbrood
-        3: 'https://images.unsplash.com/photo-1586802978403-6406fb3ddfff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Biologische Eieren
-        4: 'https://images.unsplash.com/photo-1567306226408-c302e875ce68?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Biologische Appels
-        5: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Biologische Yoghurt
-        6: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Biologische Bananen
-    };
-
     // Winkelwagen ophalen uit localStorage of nieuw array maken
     let winkelwagen = JSON.parse(localStorage.getItem('winkelwagen')) || [];
 
@@ -97,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             productenGrid.innerHTML = producten.map(product => `
                 <div class="product-kaart">
                     <div class="product-image">
-                        <img src="${productAfbeeldingen[product.id] || '/api/placeholder/300/200'}" alt="${product.naam}" />
+                        <img src="/api/placeholder/300/200" alt="${product.naam}" />
                     </div>
                     <div class="product-details">
                         <h3>${product.naam}</h3>
@@ -105,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="product-description">${product.beschrijving}</p>
                         <p class="product-price">€${product.prijs.toFixed(2)}</p>
                         <p class="product-stock">Voorraad: ${product.voorraad}</p>
-                        <button class="add-to-cart-btn" data-id="${product.id}" data-naam="${product.naam}" data-prijs="${product.prijs}" data-image="${productAfbeeldingen[product.id] || '/api/placeholder/300/200'}">
+                        <button class="add-to-cart-btn" data-id="${product.id}" data-naam="${product.naam}" data-prijs="${product.prijs}">
                             <i class="fas fa-cart-plus"></i> Toevoegen
                         </button>
                     </div>
@@ -118,8 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const id = parseInt(this.getAttribute('data-id'));
                     const naam = this.getAttribute('data-naam');
                     const prijs = parseFloat(this.getAttribute('data-prijs'));
-                    const image = this.getAttribute('data-image');
-                    voegToeAanWinkelwagen(id, naam, prijs, image);
+                    voegToeAanWinkelwagen(id, naam, prijs);
                     
                     // Animatie voor feedback
                     this.classList.add('added');
@@ -140,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             featuredProducts.innerHTML = featured.map(product => `
                 <div class="featured-product">
                     <div class="product-image">
-                        <img src="${productAfbeeldingen[product.id] || '/api/placeholder/200/150'}" alt="${product.naam}" />
+                        <img src="/api/placeholder/200/150" alt="${product.naam}" />
                     </div>
                     <div class="product-details">
                         <h3>${product.naam}</h3>
@@ -153,13 +142,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Aan winkelwagen toevoegen
-    function voegToeAanWinkelwagen(id, naam, prijs, image) {
+    function voegToeAanWinkelwagen(id, naam, prijs) {
         const bestaandProduct = winkelwagen.find(item => item.id === id);
         
         if (bestaandProduct) {
             bestaandProduct.aantal += 1;
         } else {
-            winkelwagen.push({ id, naam, prijs, aantal: 1, image });
+            winkelwagen.push({ id, naam, prijs, aantal: 1 });
         }
 
         updateLocalStorage();
@@ -205,3 +194,132 @@ document.addEventListener('DOMContentLoaded', () => {
                 emptyCartMessage.classList.add('hidden');
             }
             if (winkelwagenTotaal) {
+                winkelwagenTotaal.classList.remove('hidden');
+            }
+            
+            winkelwagenItems.innerHTML = winkelwagen.map(item => `
+                <div class="winkelwagen-item">
+                    <div class="item-image">
+                        <img src="/api/placeholder/80/80" alt="${item.naam}" />
+                    </div>
+                    <div class="item-details">
+                        <h3>${item.naam}</h3>
+                        <p>€${item.prijs.toFixed(2)} per stuk</p>
+                    </div>
+                    <div class="item-quantity">
+                        <button class="quantity-btn decrease" data-id="${item.id}">-</button>
+                        <span class="quantity">${item.aantal}</span>
+                        <button class="quantity-btn increase" data-id="${item.id}">+</button>
+                    </div>
+                    <div class="item-price">
+                        €${(item.prijs * item.aantal).toFixed(2)}
+                    </div>
+                    <button class="remove-btn" data-id="${item.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            const totaalPrijs = winkelwagen.reduce((totaal, item) => totaal + (item.prijs * item.aantal), 0);
+            
+            if (totaalPrijsElement) {
+                totaalPrijsElement.textContent = totaalPrijs.toFixed(2);
+            }
+            
+            // Event listeners voor de knoppen
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    verwijderUitWinkelwagen(id);
+                });
+            });
+            
+            document.querySelectorAll('.quantity-btn.decrease').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    verminderhoeveelheid(id);
+                });
+            });
+            
+            document.querySelectorAll('.quantity-btn.increase').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    verhooghoeveelheid(id);
+                });
+            });
+        }
+    }
+
+    // Uit winkelwagen verwijderen
+    function verwijderUitWinkelwagen(id) {
+        const item = winkelwagen.find(item => item.id === id);
+        if (item) {
+            // Toon bevestigingsmelding
+            toonMelding(`${item.naam} verwijderd uit winkelwagen`);
+        }
+        
+        winkelwagen = winkelwagen.filter(item => item.id !== id);
+        updateLocalStorage();
+        updateWinkelwagen();
+    }
+    
+    // Hoeveelheid verminderen
+    function verminderhoeveelheid(id) {
+        const item = winkelwagen.find(item => item.id === id);
+        if (item) {
+            item.aantal -= 1;
+            if (item.aantal <= 0) {
+                verwijderUitWinkelwagen(id);
+            } else {
+                updateLocalStorage();
+                updateWinkelwagen();
+            }
+        }
+    }
+    
+    // Hoeveelheid verhogen
+    function verhooghoeveelheid(id) {
+        const item = winkelwagen.find(item => item.id === id);
+        if (item) {
+            item.aantal += 1;
+            updateLocalStorage();
+            updateWinkelwagen();
+        }
+    }
+    
+    // Winkelwagen leegmaken
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', () => {
+            winkelwagen = [];
+            updateLocalStorage();
+            updateWinkelwagen();
+            toonMelding('Winkelwagen is leeggemaakt');
+        });
+    }
+    
+    // Afrekenen
+    if (betaalBtn) {
+        betaalBtn.addEventListener('click', () => {
+            if (winkelwagen.length === 0) {
+                toonMelding('Uw winkelwagen is leeg');
+                return;
+            }
+            
+            toonMelding('Bedankt voor uw bestelling!');
+            winkelwagen = [];
+            updateLocalStorage();
+            updateWinkelwagen();
+            
+            // Hier zou normaal een redirect naar betalingspagina komen
+        });
+    }
+
+    // Pagina-specifieke initialisatie
+    laadProducten();
+    updateCartCount();
+    
+    // Als we op de winkelwagenpagina zijn, update de winkelwagen
+    if (winkelwagenItems) {
+        updateWinkelwagen();
+    }
+});
