@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             productenGrid.innerHTML = producten.map(product => `
                 <div class="product-kaart">
                     <div class="product-image">
-                        <img src="/api/placeholder/300/200" alt="${product.naam}" />
+                        <img src="${product.afbeelding}" alt="${product.naam}" />
                     </div>
                     <div class="product-details">
                         <h3>${product.naam}</h3>
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="product-description">${product.beschrijving}</p>
                         <p class="product-price">€${product.prijs.toFixed(2)}</p>
                         <p class="product-stock">Voorraad: ${product.voorraad}</p>
-                        <button class="add-to-cart-btn" data-id="${product.id}" data-naam="${product.naam}" data-prijs="${product.prijs}">
+                        <button class="add-to-cart-btn" data-id="${product.id}" data-naam="${product.naam}" data-prijs="${product.prijs}" data-afbeelding="${product.afbeelding}">
                             <i class="fas fa-cart-plus"></i> Toevoegen
                         </button>
                     </div>
@@ -108,7 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const id = parseInt(this.getAttribute('data-id'));
                     const naam = this.getAttribute('data-naam');
                     const prijs = parseFloat(this.getAttribute('data-prijs'));
-                    voegToeAanWinkelwagen(id, naam, prijs);
+                    const afbeelding = this.getAttribute('data-afbeelding');
+                    voegToeAanWinkelwagen(id, naam, prijs, afbeelding);
                     
                     // Animatie voor feedback
                     this.classList.add('added');
@@ -129,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             featuredProducts.innerHTML = featured.map(product => `
                 <div class="featured-product">
                     <div class="product-image">
-                        <img src="/api/placeholder/200/150" alt="${product.naam}" />
+                        <img src="${product.afbeelding}" alt="${product.naam}" />
                     </div>
                     <div class="product-details">
                         <h3>${product.naam}</h3>
@@ -142,13 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Aan winkelwagen toevoegen
-    function voegToeAanWinkelwagen(id, naam, prijs) {
+    function voegToeAanWinkelwagen(id, naam, prijs, afbeelding) {
         const bestaandProduct = winkelwagen.find(item => item.id === id);
         
         if (bestaandProduct) {
             bestaandProduct.aantal += 1;
         } else {
-            winkelwagen.push({ id, naam, prijs, aantal: 1 });
+            winkelwagen.push({ id, naam, prijs, afbeelding, aantal: 1 });
         }
 
         updateLocalStorage();
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             winkelwagenItems.innerHTML = winkelwagen.map(item => `
                 <div class="winkelwagen-item">
                     <div class="item-image">
-                        <img src="/api/placeholder/80/80" alt="${item.naam}" />
+                        <img src="${item.afbeelding || `images/products/${item.id}.jpg`}" alt="${item.naam}" />
                     </div>
                     <div class="item-details">
                         <h3>${item.naam}</h3>
