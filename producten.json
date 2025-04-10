@@ -7,7 +7,7 @@
             "categorie": "Zuivel",
             "beschrijving": "Verse biologische melk van lokale boerderij",
             "voorraad": 100,
-            "afbeelding": "images/products/melk.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         },
         {
             "id": 2,
@@ -16,7 +16,7 @@
             "categorie": "Bakkerij", 
             "beschrijving": "Ambachtelijk volkorenbrood",
             "voorraad": 50,
-            "afbeelding": "images/products/brood.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         },
         {
             "id": 3,
@@ -25,7 +25,7 @@
             "categorie": "Eieren",
             "beschrijving": "Scharreleieren van gelukkige kippen",
             "voorraad": 75,
-            "afbeelding": "images/products/eieren.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         },
         {
             "id": 4,
@@ -34,7 +34,7 @@
             "categorie": "Fruit",
             "beschrijving": "Verse biologische appels",
             "voorraad": 200,
-            "afbeelding": "images/products/appels.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         },
         {
             "id": 5,
@@ -43,7 +43,7 @@
             "categorie": "Zuivel",
             "beschrijving": "Romige biologische yoghurt",
             "voorraad": 80,
-            "afbeelding": "images/products/yoghurt.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         },
         {
             "id": 6,
@@ -52,7 +52,7 @@
             "categorie": "Fruit",
             "beschrijving": "Verse biologische bananen",
             "voorraad": 150,
-            "afbeelding": "images/products/bananen.jpg"
+            "afbeelding": "/api/placeholder/300/200"
         }
     ]
 }
