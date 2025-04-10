@@ -16,32 +16,28 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="producten.html">Producten</a></li>
-                <li><a href="winkelwagen.html">Winkelwagen <span id="cart-count" class="cart-count">0</span></a></li>
+                <li><a href="winkelwagen.html">Winkelwagen <span id="cart-count">0</span></a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <section class="producten-container">
+    <main class="product-listing">
+        <section class="product-filter">
             <h1>Onze Producten</h1>
-            <div class="filter-container">
-                <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Zoek producten...">
-                    <button id="search-btn"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="category-filter">
-                    <select id="category-select">
-                        <option value="all">Alle categorieën</option>
-                        <option value="Zuivel">Zuivel</option>
-                        <option value="Bakkerij">Bakkerij</option>
-                        <option value="Eieren">Eieren</option>
-                        <option value="Fruit">Fruit</option>
-                    </select>
-                </div>
+            <div class="filter-options">
+                <input type="text" id="search-input" placeholder="Zoek producten...">
+                <select id="category-select">
+                    <option value="all">Alle categorieën</option>
+                    <option value="Zuivel">Zuivel</option>
+                    <option value="Bakkerij">Bakkerij</option>
+                    <option value="Eieren">Eieren</option>
+                    <option value="Fruit">Fruit</option>
+                </select>
             </div>
-            <div id="producten-grid" class="producten-grid">
-                </div>
         </section>
+
+        <section class="product-grid" id="producten-grid">
+            </section>
     </main>
 
     <footer>
