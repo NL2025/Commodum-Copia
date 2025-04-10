@@ -1,179 +1,176 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Elementen ophalen
     const productenGrid = document.getElementById('producten-grid');
     const featuredProducts = document.getElementById('featured-products');
-    const cartCount = document.getElementById('cart-count');
-    const searchInput = document.getElementById('search-input');
-    const categorySelect = document.getElementById('category-select');
     const winkelwagenItems = document.getElementById('winkelwagen-items');
     const totaalPrijsElement = document.getElementById('totaal-prijs');
+    const cartCountElements = document.querySelectorAll('#cart-count');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+    const winkelwagenTotaal = document.querySelector('.winkelwagen-totaal');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const categorySelect = document.getElementById('category-select');
     const clearCartBtn = document.getElementById('clear-cart');
     const betaalBtn = document.getElementById('betaal-btn');
-    const emptyCartMessage = document.getElementById('empty-cart-message');
 
+    // Winkelwagen ophalen uit localStorage of nieuw array maken
     let winkelwagen = JSON.parse(localStorage.getItem('winkelwagen')) || [];
 
-    function updateCartCount() {
-        let count = winkelwagen.reduce((total, item) => total + item.aantal, 0);
-        cartCount.textContent = count;
-    }
-
+    // Winkelwagen bijwerken in localStorage
     function updateLocalStorage() {
         localStorage.setItem('winkelwagen', JSON.stringify(winkelwagen));
         updateCartCount();
     }
 
+    // Update winkelwagen teller
+    function updateCartCount() {
+        const totalItems = winkelwagen.reduce((total, item) => total + item.aantal, 0);
+        cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+        });
+    }
+
+    // Producten laden
     async function laadProducten() {
         try {
             const response = await fetch('producten.json');
             const data = await response.json();
-            toonProducten(data);
 
-            if (searchInput) {
-                searchInput.addEventListener('input', filterProducten);
+            // Producten weergeven op productenpagina
+            if (productenGrid) {
+                toonProducten(data.producten);
+                // Zoekfunctionaliteit
+                if (searchBtn && searchInput) {
+                    searchBtn.addEventListener('click', () => filterProducten(data.producten));
+                }
+
+                // Categorie filter
+                if (categorySelect) {
+                    categorySelect.addEventListener('change', () => filterProducten(data.producten));
+                }
             }
 
-            if (categorySelect) {
-                categorySelect.addEventListener('change', filterProducten);
+            // Featured producten op homepage
+            if (featuredProducts) {
+                toonFeaturedProducten(data.producten);
             }
-
         } catch (error) {
-            console.error('Fout bij het laden van producten:', error);
+            console.error('Fout bij laden producten:', error);
         }
     }
 
-    function toonProducten(producten) {
-        if (!productenGrid) return;
+    // Filter producten op basis van zoekopdracht en categorie
+    function filterProducten(producten) {
+        const zoekterm = searchInput ?
+            searchInput.value.toLowerCase() : '';
+        const categorie = categorySelect ?
+            categorySelect.value : 'all';
+        const gefilterd = producten.filter(product => {
+            const matchesZoekterm = product.naam.toLowerCase().includes(zoekterm) ||
+                product.beschrijving.toLowerCase().includes(zoekterm);
+            const matchesCategorie = categorie === 'all' || product.categorie === categorie;
 
-        productenGrid.innerHTML = producten.map(product => `
-            <div class="product-card">
-                <img src="${product.afbeelding}" alt="${product.naam}" class="product-image">
-                <div class="product-details">
-                    <h3>${product.naam}</h3>
-                    <p class="product-price">€${product.prijs.toFixed(2)}</p>
-                    <button class="add-to-cart-btn" data-id="${product.id}">Toevoegen</button>
-                </div>
-            </div>
-        `).join('');
-
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const id = parseInt(button.dataset.id);
-                const product = producten.find(p => p.id === id);
-                if (product) {
-                    voegToeAanWinkelwagen(product);
-                }
-            });
+            return matchesZoekterm && matchesCategorie;
         });
 
-        if (featuredProducts) {
-            const featured = [...producten].sort(() => 0.5 - Math.random()).slice(0, 4);
-            toonFeaturedProducten(featured);
+        toonProducten(gefilterd);
+    }
+
+    // Producten weergeven
+    function toonProducten(producten) {
+        if (productenGrid) {
+            if (producten.length === 0) {
+                productenGrid.innerHTML = '<p class="no-products">Geen producten gevonden.</p>';
+                return;
+            }
+
+            productenGrid.innerHTML = producten.map(product => `
+                <div class="product-kaart">
+                    <div class="product-image">
+                        <img src="<span class="math-inline">\{product\.afbeelding\}" alt\="</span>{product.naam}" />
+                    </div>
+                    <div class="product-details">
+                        <h3><span class="math-inline">\{product\.naam\}</h3\>
+<p class\="product\-category"\></span>{product.categorie}</p>
+                        <p class="product-description"><span class="math-inline">\{product\.beschrijving\}</p\>
+<p class\="product\-price"\>€</span>{product.prijs.toFixed(2)}</p>
+                        <p class="product-stock">Voorraad: <span class="math-inline">\{product\.voorraad\}</p\>
+<button class\="add\-to\-cart\-btn" data\-id\="</span>{product.id}" data-naam="<span class="math-inline">\{product\.naam\}" data\-prijs\="</span>{product.prijs}">
+                            <i class="fas fa-cart-plus"></i> Toevoegen
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            // Event listeners voor de nieuwe knoppen
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    const naam = this.getAttribute('data-naam');
+                    const prijs = parseFloat(this.getAttribute('data-prijs'));
+                    voegToeAanWinkelwagen(id, naam, prijs);
+
+                    // Animatie voor feedback
+                    this.classList.add('added');
+                    setTimeout(() => {
+                        this.classList.remove('added');
+                    }, 1000);
+                });
+            });
         }
     }
 
+    // Featured producten weergeven op homepage
     function toonFeaturedProducten(producten) {
-        if (!featuredProducts) return;
-
-        featuredProducts.innerHTML = producten.map(product => `
-            <div class="product-card">
-                <img src="${product.afbeelding}" alt="${product.naam}" class="product-image">
-                <div class="product-details">
-                    <h3>${product.naam}</h3>
-                    <p class="product-price">€${product.prijs.toFixed(2)}</p>
-                    <a href="producten.html?id=${product.id}" class="btn small">Bekijk</a>
+        if (featuredProducts) {
+            // Selecteer willekeurig 3 producten
+            const featured = [...producten].sort(() => 0.5 - Math.random()).slice(0, 3);
+            featuredProducts.innerHTML = featured.map(product => `
+                <div class="featured-product">
+                    <div class="product-image">
+                        <img src="<span class="math-inline">\{product\.afbeelding\}" alt\="</span>{product.naam}" />
+                    </div>
+                    <div class="product-details">
+                        <h3><span class="math-inline">\{product\.naam\}</h3\>
+<p class\="product\-price"\>€</span>{product.prijs.toFixed(2)}</p>
+                        <a href="producten.html" class="btn small">Bekijk Producten</a>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
     }
 
-    function filterProducten() {
-        const zoekterm = searchInput ? searchInput.value.toLowerCase() : '';
-        const categorie = categorySelect ? categorySelect.value : 'all';
-
-        fetch('producten.json')
-            .then(response => response.json())
-            .then(data => {
-                const gefilterd = data.filter(product =>
-                    (product.naam.toLowerCase().includes(zoekterm) || product.beschrijving.toLowerCase().includes(zoekterm)) &&
-                    (categorie === 'all' || product.categorie === categorie)
-                );
-                toonProducten(gefilterd);
-            });
-    }
-
-    function voegToeAanWinkelwagen(product) {
-        const bestaandProduct = winkelwagen.find(item => item.id === product.id);
+    // Aan winkelwagen toevoegen
+    function voegToeAanWinkelwagen(id, naam, prijs) {
+        const bestaandProduct = winkelwagen.find(item => item.id === id);
         if (bestaandProduct) {
-            bestaandProduct.aantal++;
+            bestaandProduct.aantal += 1;
         } else {
             winkelwagen.push({
-                ...product,
+                id,
+                naam,
+                prijs,
                 aantal: 1
             });
         }
+
         updateLocalStorage();
-        updateWinkelwagenWeergave();
+
+        // Toon bevestigingsmelding
+        toonMelding(`${naam} toegevoegd aan winkelwagen!`);
     }
 
-    function updateWinkelwagenWeergave() {
-        if (!winkelwagenItems) return;
+    // Bevestigingsmelding tonen
+    function toonMelding(bericht) {
+        const melding = document.createElement('div');
+        melding.className = 'melding';
+        melding.textContent = bericht;
+        document.body.appendChild(melding);
 
-        if (winkelwagen.length === 0) {
-            winkelwagenItems.innerHTML = '<p>Uw winkelwagen is leeg.</p>';
-            if (emptyCartMessage) emptyCartMessage.classList.remove('hidden');
-            return;
-        } else {
-            if (emptyCartMessage) emptyCartMessage.classList.add('hidden');
-        }
-
-        winkelwagenItems.innerHTML = winkelwagen.map(item => `
-            <div class="cart-item">
-                <img src="${item.afbeelding}" alt="${item.naam}" class="item-image">
-                <div class="item-details">
-                    <h4>${item.naam}</h4>
-                    <p>€${item.prijs.toFixed(2)} x ${item.aantal}</p>
-                </div>
-                <button class="remove-item-btn" data-id="${item.id}">Verwijderen</button>
-            </div>
-        `).join('');
-
-        const totaalPrijs = winkelwagen.reduce((totaal, item) => totaal + (item.prijs * item.aantal), 0);
-        if (totaalPrijsElement) {
-            totaalPrijsElement.textContent = totaalPrijs.toFixed(2);
-        }
-
-        document.querySelectorAll('.remove-item-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const id = parseInt(button.dataset.id);
-                verwijderUitWinkelwagen(id);
-            });
-        });
-    }
-
-    function verwijderUitWinkelwagen(id) {
-        winkelwagen = winkelwagen.filter(item => item.id !== id);
-        updateLocalStorage();
-        updateWinkelwagenWeergave();
-    }
-
-    if (clearCartBtn) {
-        clearCartBtn.addEventListener('click', () => {
-            winkelwagen = [];
-            updateLocalStorage();
-            updateWinkelwagenWeergave();
-        });
-    }
-
-    if (betaalBtn) {
-        betaalBtn.addEventListener('click', () => {
-            alert('Betaling verwerkt! Bedankt voor uw aankoop.');
-            winkelwagen = [];
-            updateLocalStorage();
-            updateWinkelwagenWeergave();
-        });
-    }
-
-    laadProducten();
-    updateCartCount();
-    updateWinkelwagenWeergave();
-});
+        setTimeout(() => {
+            melding.classList.add('show');
+        }, 10);
+        setTimeout(() => {
+            melding.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(melding);
+            }, 300);
