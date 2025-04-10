@@ -30,11 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Helper functie om veilige afbeelding-url te krijgen
+    function getImageUrl(imagePath) {
+        // Als de afbeelding al een placeholder is, gebruik deze
+        if (imagePath.startsWith('/api/placeholder/')) {
+            return imagePath;
+        }
+        // Anders gebruik een standaard placeholder
+        return '/api/placeholder/300/200';
+    }
+
     // Producten laden
     async function laadProducten() {
         try {
             const response = await fetch('producten.json');
             const data = await response.json();
+            
+            // Controleer of elk product een geldige afbeeldingspadpadpad heeft
+            data.producten = data.producten.map(product => {
+                product.afbeelding = getImageUrl(product.afbeelding);
+                return product;
+            });
             
             // Producten weergeven op productenpagina
             if (productenGrid) {
@@ -201,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             winkelwagenItems.innerHTML = winkelwagen.map(item => `
                 <div class="winkelwagen-item">
                     <div class="item-image">
-                        <img src="${item.afbeelding || `images/products/${item.id}.jpg`}" alt="${item.naam}" />
+                        <img src="${getImageUrl(item.afbeelding)}" alt="${item.naam}" />
                     </div>
                     <div class="item-details">
                         <h3>${item.naam}</h3>
