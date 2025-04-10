@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Commodum Copia Supermarkt</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -16,60 +17,65 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="producten.html">Producten</a></li>
-                <li><a href="winkelwagen.html">Winkelwagen <span id="cart-count">0</span></a></li>
+                <li><a href="winkelwagen.html">Winkelwagen <span id="cart-count" class="cart-count">0</span></a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Welkom bij Commodum Copia</h1>
-                <p>Verse, biologische producten rechtstreeks van de boer.</p>
+        <section class="welkom">
+            <h1>Welkom bij Commodum Copia</h1>
+            <p>Verse producten rechtstreeks van lokale boeren</p>
+            <div class="welkom-buttons">
                 <a href="producten.html" class="btn">Bekijk Producten</a>
-            </div>
-            <div class="hero-image">
-                <img src="images/hero.jpg" alt="Verse groenten en fruit">
             </div>
         </section>
 
-        <section class="featured-categories">
-            <h2>Populaire Categorieën</h2>
-            <div class="category-grid">
-                <a href="producten.html?categorie=Fruit" class="category">
-                    <img src="images/fruit.jpg" alt="Fruit">
-                    <h3>Fruit</h3>
-                </a>
-                <a href="producten.html?categorie=Zuivel" class="category">
-                    <img src="images/zuivel.jpg" alt="Zuivel">
-                    <h3>Zuivel</h3>
-                </a>
-                <a href="producten.html?categorie=Bakkerij" class="category">
-                    <img src="images/bakkerij.jpg" alt="Bakkerij">
-                    <h3>Bakkerij</h3>
-                </a>
+        <section class="voordelen">
+            <div class="voordelen-container">
+                <div class="voordeel">
+                    <div class="voordeel-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>100% Biologisch</h3>
+                    <p>Al onze producten zijn 100% biologisch en duurzaam geteeld</p>
+                </div>
+                <div class="voordeel">
+                    <div class="voordeel-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Gratis Bezorging</h3>
+                    <p>Gratis bezorging bij bestellingen boven €25</p>
+                </div>
+                <div class="voordeel">
+                    <div class="voordeel-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Lokale Producenten</h3>
+                    <p>We ondersteunen lokale boeren en producenten</p>
+                </div>
             </div>
         </section>
 
         <section class="featured-products">
-            <h2>Uitgelichte Producten</h2>
-            <div class="product-grid" id="featured-products">
+            <h2>Aangeraden Producten</h2>
+            <div class="featured-grid" id="featured-products">
                 </div>
-            <a href="producten.html" class="btn">Bekijk Alle Producten</a>
         </section>
 
-        <section class="about-us">
+        <section class="about-section">
             <div class="about-content">
                 <div class="about-text">
                     <h2>Over Commodum Copia</h2>
-                    <p>
-                        Commodum Copia is jouw online supermarkt voor verse en biologische producten.
-                        Wij werken samen met lokale boeren om de hoogste kwaliteit en duurzaamheid te garanderen.
-                    </p>
+                    <p>Commodum Copia is een premium online supermarkt die zich richt op het leveren van de hoogste
+                        kwaliteit biologische producten.</p>
+                    <p>We werken nauw samen met lokale boeren om de versheid en kwaliteit van onze producten te
+                        garanderen.</p>
+                    <p>Onze missie is om gezonde, duurzame en eerlijke voeding toegankelijk te maken voor iedereen.</p>
                     <a href="#" class="btn">Lees Meer</a>
                 </div>
                 <div class="about-image">
-                    <img src="images/about.jpg" alt="Over Commodum Copia">
+                    <img src="images/about.jpg" alt="Biologische boerderij">
                 </div>
             </div>
         </section>
